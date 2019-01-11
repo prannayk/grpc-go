@@ -673,10 +673,10 @@ func recv(p *parser, c baseCodec, s *transport.Stream, dc Decompressor, m interf
 // pointers to codec, and compressors, then we can use preparedMsg for Async message prep
 // and reuse marshalled bytes
 type rpcInfo struct {
-	failfast bool
-	codec baseCodec
-	cp    Compressor
-	comp  encoding.Compressor
+	failfast 	bool
+	codec		 baseCodec
+	cp    		Compressor
+	comp  		encoding.Compressor
 }
 
 type rpcInfoContextKey struct{}

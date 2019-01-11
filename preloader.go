@@ -19,27 +19,28 @@
 package grpc
 
 import (
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/grpc/encoding"
+	// "google.golang.org/grpc/encoding"
 )
 
-type PreparedMsg struct struct {
-	encodedMsg 		[]byte 
-	compredMsg 		[]byte
-	hdr 			[]byte
-	payload 		[]byte
+type PreparedMsg struct {
+	encodedData 		[]byte 
+	compredData 		[]byte
+	hdr		 			[]byte
+	payload 			[]byte
 }
 
 // checks if the rpcInfo has all the correct information
 func checkPreparedMsgContext(rpc *rpcInfo) error {
-	rpc.codec == nil {
-		return status.Errorf("grpc : preparedmsg : rpcInfo.codec is nil")
+	if rpc.codec == nil {
+		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.codec is nil")
 	}
-	rpc.cp == nil {
-		return status.Errorf("grpc : preparedmsg : rpcInfo.cp is nil")
+	if rpc.cp == nil {
+		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.cp is nil")
 	}
-	rpc.comp == nil {
-		return status.Errorf("grpc : preparedmsg : rpcInfo.comp is nil")
+	if rpc.comp == nil {
+		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.comp is nil")
 	}
 	return nil
 }
@@ -47,7 +48,7 @@ func checkPreparedMsgContext(rpc *rpcInfo) error {
 // TODO(prannayk) : if something changes then mark prepared msg as old
 // Encode : marshal and compresses data based on stream context
 // Returns error in case of error
-func (p *PreparedMsg) Encode(s grpc.Stream, msg interface{}) error {
+func (p *PreparedMsg) Encode(s Stream, msg interface{}) error {
 	ctx := s.Context()
 	rpcInfo, ok := rpcInfoFromContext(ctx)
 	if !ok {
@@ -57,15 +58,16 @@ func (p *PreparedMsg) Encode(s grpc.Stream, msg interface{}) error {
 	if err != nil {
 		return err
 	}
-	data, err := encode(rpcInfo.codec, m)
+	data, err := encode(rpcInfo.codec, msg)
 	if err != nil {
 		return err
 	}
-	p.encodedMsg = data
+	p.encodedData = data
 	compData, err := compress(data, rpcInfo.cp, rpcInfo.comp)
 	if err != nil {
 		return err
 	}
-	p.compData = compData
+	p.compredData = compData
 	p.hdr, p.payload = msgHeader(data, compData)
+	return nil
 }
