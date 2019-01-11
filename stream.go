@@ -676,7 +676,7 @@ func (cs *clientStream) SendMsg(m interface{}) (err error) {
 	if !ok {
 		// The input interface is not a prepared msg. 
 		// Marshal and Compress the data at this point
-		data, err := encode(cs.codec, m)
+		data, err = encode(cs.codec, m)
 		if err != nil {
 			return err
 		}
@@ -1169,6 +1169,7 @@ func (as *addrConnStream) SendMsg(m interface{}) (err error) {
 
 	} else {
 		hdr, payld = prepared_msg.hdr, prepared_msg.payload
+		data = prepared_msg.encodedData
 	}
 	// TODO(dfawley): should we be checking len(data) instead?
 	if len(payld) > *as.callInfo.maxSendMessageSize {
@@ -1411,7 +1412,7 @@ func (ss *serverStream) SendMsg(m interface{}) (err error) {
 	if !ok {
 		// The input interface is not a prepared msg. 
 		// Marshal and Compress the data at this point
-		data, err := encode(ss.codec, m)
+		data, err = encode(ss.codec, m)
 		if err != nil {
 			return err
 		}
@@ -1420,7 +1421,6 @@ func (ss *serverStream) SendMsg(m interface{}) (err error) {
 			return err
 		}
 		hdr, payload = msgHeader(data, compData)
-
 	} else {
 		hdr, payload = prepared_msg.hdr, prepared_msg.payload
 		data = prepared_msg.encodedData
