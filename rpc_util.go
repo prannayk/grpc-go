@@ -168,6 +168,7 @@ func defaultCallInfo() *callInfo {
 	return &callInfo{
 		failFast:              true,
 		maxRetryRPCBufferSize: 256 * 1024, // 256KB
+		compressorType : 	   "gzip",
 	}
 }
 
@@ -683,6 +684,15 @@ type rpcInfoContextKey struct{}
 
 func newContextWithRPCInfo(ctx context.Context, failfast bool) context.Context {
 	return context.WithValue(ctx, rpcInfoContextKey{}, &rpcInfo{failfast: failfast})
+}
+
+func newContextWithRPCInfo_Preloader(ctx context.Context, failfast bool, codec baseCodec, cp Compressor, comp encoding.Compressor) context.Context {
+	return context.WithValue(ctx, rpcInfoContextKey{}, &rpcInfo{
+		failfast : failfast,
+		codec : codec, 
+		cp : cp, 
+		comp : comp,
+	})
 }
 
 func rpcInfoFromContext(ctx context.Context) (s *rpcInfo, ok bool) {

@@ -36,11 +36,8 @@ func checkPreparedMsgContext(rpc *rpcInfo) error {
 	if rpc.codec == nil {
 		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.codec is nil")
 	}
-	if rpc.cp == nil {
-		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.cp is nil")
-	}
-	if rpc.comp == nil {
-		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.comp is nil")
+	if rpc.cp == nil && rpc.comp == nil {
+		return status.Errorf(codes.Internal, "grpc : preparedmsg : rpcInfo.cp is nil AND rpcInfo.comp is nil")
 	}
 	return nil
 }
