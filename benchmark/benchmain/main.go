@@ -267,14 +267,14 @@ func makeFuncUnconstrainedStreamPreloaded(benchFeatures stats.Features) (func(in
 		Payload:      pl,
 	}
 
-	prepared_msg := make([]*grpc.PreparedMsg, len(streams))
+	preparedMsg := make([]*grpc.PreparedMsg, len(streams))
 	for i, stream := range streams {
-		prepared_msg[i] = &grpc.PreparedMsg{}
-		prepared_msg[i].Encode(stream, req)
+		preparedMsg[i] = &grpc.PreparedMsg{}
+		preparedMsg[i].Encode(stream, req)
 	}
 
 	return func(pos int) {
-			streams[pos].SendMsg(prepared_msg[pos])
+			streams[pos].SendMsg(preparedMsg[pos])
 		}, func(pos int) {
 			streams[pos].Recv()
 		}, cleanup
